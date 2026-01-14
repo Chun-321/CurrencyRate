@@ -13,14 +13,15 @@ type BankCardProps = {
   rank: number;
   showExplanation: boolean;
   rankingFactors?: string;
+  currency: string;
 };
 
-export function BankCard({ bank, rank, showExplanation, rankingFactors }: BankCardProps) {
+export function BankCard({ bank, rank, showExplanation, rankingFactors, currency }: BankCardProps) {
   const BankLogo = bank.logo;
   const { dictionary, language } = useContext(LanguageContext);
 
   const bankName = language === 'zh-TW' ? bank.name : bank.id.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-
+  const rate = bank.rates[currency] || 0;
 
   return (
     <Card className="transition-all duration-300 hover:shadow-xl hover:border-primary">
@@ -34,13 +35,13 @@ export function BankCard({ bank, rank, showExplanation, rankingFactors }: BankCa
                 <h3 className="text-lg font-semibold">{bank.name}</h3>
               </div>
               <Badge variant={rank <= 2 ? "default" : "secondary"} className="hidden sm:inline-flex bg-accent text-accent-foreground">
-                {dictionary.bankCard.usd}: {bank.rate.toFixed(4)}
+                {currency}: {rate.toFixed(4)}
               </Badge>
             </div>
             <div className="mt-3 space-y-2 text-sm text-muted-foreground">
               <p className="sm:hidden">
                 <Badge variant={rank <= 2 ? "default" : "secondary"} className="bg-accent text-accent-foreground">
-                  {dictionary.bankCard.usd}: {bank.rate.toFixed(4)}
+                  {currency}: {rate.toFixed(4)}
                 </Badge>
               </p>
               <div className="flex items-start gap-2">
@@ -55,7 +56,7 @@ export function BankCard({ bank, rank, showExplanation, rankingFactors }: BankCa
           </div>
           {showExplanation && rankingFactors && (
             <div className="self-center">
-              <ExplanationDialog bank={bank} rankingFactors={rankingFactors} />
+              <ExplanationDialog bank={bank} rankingFactors={rankingFactors} currency={currency} />
             </div>
           )}
         </div>

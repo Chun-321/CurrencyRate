@@ -20,9 +20,10 @@ import { LanguageContext } from "@/contexts/language-context";
 type ExplanationDialogProps = {
   bank: Bank;
   rankingFactors: string;
+  currency: string;
 };
 
-export function ExplanationDialog({ bank, rankingFactors }: ExplanationDialogProps) {
+export function ExplanationDialog({ bank, rankingFactors, currency }: ExplanationDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [explanation, setExplanation] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +31,7 @@ export function ExplanationDialog({ bank, rankingFactors }: ExplanationDialogPro
   const { dictionary, language } = useContext(LanguageContext);
   
   const bankName = language === 'zh-TW' ? bank.name : bank.id.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-
+  const rate = bank.rates[currency] || 0;
 
   const handleOpenChange = async (open: boolean) => {
     setIsOpen(open);
@@ -39,7 +40,7 @@ export function ExplanationDialog({ bank, rankingFactors }: ExplanationDialogPro
       try {
         const result = await explainRankingFactors({
           bankName: bankName,
-          exchangeRate: bank.rate,
+          exchangeRate: rate,
           feeDescription: bank.fees,
           promotionDescription: bank.promotion,
           rankingFactors: rankingFactors,
@@ -81,7 +82,7 @@ export function ExplanationDialog({ bank, rankingFactors }: ExplanationDialogPro
               <Skeleton className="h-4 w-full" />
               <Skeleton className="h-4 w-3/4" />
             </>
-            ) : (
+          ) : (
             <p className="text-sm text-foreground leading-relaxed">{explanation}</p>
           )}
         </div>
