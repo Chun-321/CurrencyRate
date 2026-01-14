@@ -27,7 +27,10 @@ export function ExplanationDialog({ bank, rankingFactors }: ExplanationDialogPro
   const [explanation, setExplanation] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { dictionary } = useContext(LanguageContext);
+  const { dictionary, language } = useContext(LanguageContext);
+  
+  const bankName = language === 'zh-TW' ? bank.name : bank.id.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+
 
   const handleOpenChange = async (open: boolean) => {
     setIsOpen(open);
@@ -35,7 +38,7 @@ export function ExplanationDialog({ bank, rankingFactors }: ExplanationDialogPro
       setIsLoading(true);
       try {
         const result = await explainRankingFactors({
-          bankName: bank.name,
+          bankName: bankName,
           exchangeRate: bank.rate,
           feeDescription: bank.fees,
           promotionDescription: bank.promotion,
@@ -78,7 +81,7 @@ export function ExplanationDialog({ bank, rankingFactors }: ExplanationDialogPro
               <Skeleton className="h-4 w-full" />
               <Skeleton className="h-4 w-3/4" />
             </>
-          ) : (
+            ) : (
             <p className="text-sm text-foreground leading-relaxed">{explanation}</p>
           )}
         </div>

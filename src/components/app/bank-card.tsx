@@ -17,7 +17,10 @@ type BankCardProps = {
 
 export function BankCard({ bank, rank, showExplanation, rankingFactors }: BankCardProps) {
   const BankLogo = bank.logo;
-  const { dictionary } = useContext(LanguageContext);
+  const { dictionary, language } = useContext(LanguageContext);
+
+  const bankName = language === 'zh-TW' ? bank.name : bank.id.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+
 
   return (
     <Card className="transition-all duration-300 hover:shadow-xl hover:border-primary">
