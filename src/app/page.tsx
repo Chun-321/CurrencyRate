@@ -84,7 +84,7 @@ export default function Home() {
 
         <Card className="mb-8 shadow-lg">
           <CardHeader>
-            <CardTitle>Adjust Your Preference</CardTitle>
+            <CardTitle className="text-yellow-500">銀行匯率排行榜</CardTitle>
           </CardHeader>
           <CardContent>
             <RadioGroup
