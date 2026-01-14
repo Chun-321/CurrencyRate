@@ -1,18 +1,22 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useContext } from "react";
 import { banks, type Bank } from "@/lib/banks";
 import { BankCard } from "@/components/app/bank-card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRightLeft, Coins } from "lucide-react";
+import { LanguageContext } from "@/contexts/language-context";
+import { LanguageSwitcher } from "@/components/app/language-switcher";
 
 type RankingPreference = "comprehensive" | "rate";
 
 export default function Home() {
   const [rankingPreference, setRankingPreference] =
     useState<RankingPreference>("comprehensive");
+    const { dictionary } = useContext(LanguageContext);
+
 
   const rankings = useMemo(() => {
     const rateSorted = [...banks].sort((a, b) => b.rate - a.rate);
@@ -65,26 +69,29 @@ export default function Home() {
   
   const preferenceText = useMemo(() => {
     if (rankingPreference === "rate") {
-      return "You are prioritizing higher exchange rates.";
+      return dictionary.preferenceTextRate;
     }
-    return "You are prioritizing promotions and fees.";
-  }, [rankingPreference]);
+    return dictionary.preferenceTextComprehensive;
+  }, [rankingPreference, dictionary]);
 
   return (
     <main className="flex min-h-screen w-full flex-col items-center bg-background p-4 sm:p-8">
       <div className="w-full max-w-6xl">
-        <header className="mb-8 text-center">
+        <header className="mb-8 text-center relative">
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl font-headline">
-            Currency Compass
+            {dictionary.title}
           </h1>
           <p className="mt-2 text-lg text-muted-foreground">
-            Your guide to smarter currency exchange.
+            {dictionary.description}
           </p>
+          <div className="absolute top-0 right-0">
+            <LanguageSwitcher />
+          </div>
         </header>
 
         <Card className="mb-8 shadow-lg">
           <CardHeader>
-            <CardTitle className="text-yellow-500">銀行匯率排行榜</CardTitle>
+            <CardTitle className="text-yellow-500">{dictionary.rankingTitle}</CardTitle>
           </CardHeader>
           <CardContent>
             <RadioGroup
@@ -97,13 +104,13 @@ export default function Home() {
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="comprehensive" id="r1" />
                 <Label htmlFor="r1" className="text-base">
-                  Prioritize Promotions
+                  {dictionary.prioritizePromotions}
                 </Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="rate" id="r2" />
                 <Label htmlFor="r2" className="text-base">
-                  Prioritize Exchange Rate
+                  {dictionary.prioritizeExchangeRate}
                 </Label>
               </div>
             </RadioGroup>
@@ -116,7 +123,7 @@ export default function Home() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-2xl">
                   <Coins className="text-primary" />
-                  Comprehensive Ranking
+                  {dictionary.comprehensiveRanking}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -139,7 +146,7 @@ export default function Home() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-2xl">
                   <ArrowRightLeft className="text-primary" />
-                  Best Rate Ranking
+                  {dictionary.bestRateRanking}
                 </CardTitle>
               </CardHeader>
               <CardContent>

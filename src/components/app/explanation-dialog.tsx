@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useContext } from "react";
 import {
   Dialog,
   DialogContent,
@@ -15,6 +15,7 @@ import type { Bank } from "@/lib/banks";
 import { Sparkles } from "lucide-react";
 import { explainRankingFactors } from "@/ai/flows/explain-ranking-factors";
 import { useToast } from "@/hooks/use-toast";
+import { LanguageContext } from "@/contexts/language-context";
 
 type ExplanationDialogProps = {
   bank: Bank;
@@ -26,6 +27,7 @@ export function ExplanationDialog({ bank, rankingFactors }: ExplanationDialogPro
   const [explanation, setExplanation] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { dictionary } = useContext(LanguageContext);
 
   const handleOpenChange = async (open: boolean) => {
     setIsOpen(open);
@@ -59,14 +61,14 @@ export function ExplanationDialog({ bank, rankingFactors }: ExplanationDialogPro
       <DialogTrigger asChild>
         <Button variant="ghost" size="icon">
           <Sparkles className="h-5 w-5 text-primary" />
-          <span className="sr-only">Why this rank?</span>
+          <span className="sr-only">{dictionary.explanationDialog.whyThisRank}</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Why is {bank.name} ranked here?</DialogTitle>
+          <DialogTitle>{dictionary.explanationDialog.title.replace('{bankName}', bank.name)}</DialogTitle>
           <DialogDescription>
-            An AI-generated explanation based on your preferences.
+            {dictionary.explanationDialog.description}
           </DialogDescription>
         </DialogHeader>
         <div className="mt-4 space-y-4">

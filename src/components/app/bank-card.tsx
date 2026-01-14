@@ -1,10 +1,12 @@
 "use client";
 
+import { useContext } from "react";
 import type { Bank } from "@/lib/banks";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ExplanationDialog } from "./explanation-dialog";
 import { TrendingUp, Tag } from "lucide-react";
+import { LanguageContext } from "@/contexts/language-context";
 
 type BankCardProps = {
   bank: Bank;
@@ -15,6 +17,7 @@ type BankCardProps = {
 
 export function BankCard({ bank, rank, showExplanation, rankingFactors }: BankCardProps) {
   const BankLogo = bank.logo;
+  const { dictionary } = useContext(LanguageContext);
 
   return (
     <Card className="transition-all duration-300 hover:shadow-xl hover:border-primary">
@@ -28,13 +31,13 @@ export function BankCard({ bank, rank, showExplanation, rankingFactors }: BankCa
                 <h3 className="text-lg font-semibold">{bank.name}</h3>
               </div>
               <Badge variant={rank <= 2 ? "default" : "secondary"} className="hidden sm:inline-flex bg-accent text-accent-foreground">
-                USD: {bank.rate.toFixed(4)}
+                {dictionary.bankCard.usd}: {bank.rate.toFixed(4)}
               </Badge>
             </div>
             <div className="mt-3 space-y-2 text-sm text-muted-foreground">
               <p className="sm:hidden">
                 <Badge variant={rank <= 2 ? "default" : "secondary"} className="bg-accent text-accent-foreground">
-                  USD: {bank.rate.toFixed(4)}
+                  {dictionary.bankCard.usd}: {bank.rate.toFixed(4)}
                 </Badge>
               </p>
               <div className="flex items-start gap-2">
